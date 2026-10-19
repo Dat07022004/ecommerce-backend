@@ -1,8 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { Request, Response, NextFunction } from 'express';
-
-export const CORRELATION_ID_HEADER = 'x-request-id';
+import { NextFunction, Request, Response } from 'express';
+import { CORRELATION_ID_HEADER } from 'src/shared/constants/correlation-id';
 
 @Injectable()
 export class CorrelationIdMiddleware implements NestMiddleware {
