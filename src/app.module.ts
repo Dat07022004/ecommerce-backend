@@ -2,10 +2,11 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import appConfig from './config/app/app.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { allConfigs } from './config/configuration';
+import { TypeOrmConfigService } from './config/database/typeorm-config.service';
 import { validateEnv } from './config/env.validation';
 import { PinoLoggerModule } from './config/logger/logger.module';
-import throttlerConfig from './config/throttler/throttler.config';
 import { AppThrottlerModule } from './config/throttler/throttler.module';
 import { AllExceptionsFilter } from './core/filters/all-exceptions.filter';
 import { CorrelationIdMiddleware } from './core/middlewares/correctlation-id.middleware';
@@ -22,10 +23,13 @@ const envFile =
       cache: true,
       validate: validateEnv,
       envFilePath: envFile,
-      load: [appConfig, throttlerConfig],
+      load: allConfigs,
     }),
     PinoLoggerModule,
     AppThrottlerModule,
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService,
+    }),
   ],
   providers: [
     {
